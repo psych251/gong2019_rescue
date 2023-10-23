@@ -11,7 +11,7 @@
 
 <meta name="author" content="Raphael Uricher (Email: ruricher@stanford.edu)" />
 
-<meta name="date" content="2023-10-03" />
+<meta name="date" content="2023-10-22" />
 
 <title>Replication of ‘Are Older Adults More Willing to Donate? The Roles of Donation Form and Social Relationship’ by Gong, Zhang &amp; Fung (2019, The Journals of Gerontology: Series B)</title>
 
@@ -361,7 +361,7 @@ Willing to Donate? The Roles of Donation Form and Social Relationship’
 by Gong, Zhang &amp; Fung (2019, The Journals of Gerontology: Series
 B)</h1>
 <h4 class="author">Raphael Uricher (Email: <a href="mailto:ruricher@stanford.edu" class="email">ruricher@stanford.edu</a>)</h4>
-<h4 class="date">October 03, 2023</h4>
+<h4 class="date">October 22, 2023</h4>
 
 </div>
 
@@ -429,6 +429,342 @@ developing.</p>
 Repository</a></p>
 <p><a href="https://github.com/psych251/gong2019_rescue/blob/main/original_paper/gbx099.pdf">Original
 Paper</a></p>
+</div>
+<div id="summary-of-prior-replication-attempt" class="section level2">
+<h2>Summary of prior replication attempt</h2>
+<p>The prior replication attempt was conducted by Yochai Shavit in 2017
+and was unable to replicate Gong et al.’s (2019) main findings. However,
+Shavit’s replication attempt departed from the original study on a
+number of dimensions. Firstly, the original sample consisted of 89
+younger (age range: 18-44, mean: 30.1) and 66 older adults (age range:
+60-84, mean: 69.4) from Hong Kong. In the replication attempt, based on
+a power analysis indicating that data from 45 younger and 45 older
+adults would be sufficient to detect a main effect of age with 80% power
+in a one-tailed t-test, 43 younger (age range: 19-35, mean: 28.2) and 47
+older (age range: 57-74, mean: 62.7) adults living in the United States
+were recruited. The samples thus differed in three key ways: the sample
+in the replication study was smaller, the participants in the
+replication study were younger, and the samples represented two very
+different cultures. Of these, Shavit suggests - and I concur - that the
+factor likely to be most implicated in the failure to replicate is
+culture, given there are different norms surrounding donation and
+attitudes towards relatives in Hong Kong and the United States.
+Additional differences in implementation and analysis were as
+follows:</p>
+<ol style="list-style-type: decimal">
+<li><p>The original study was conducted in person in a lab, whereas the
+replication study was conducted online. Given the study’s variables
+essentially consist exclusively of a survey, this seems unlikely to have
+caused any issues.</p></li>
+<li><p>Participants in the original study were asked to imagine they had
+100,000 Hong Kong dollars (HKD), whereas participants in the replication
+study were asked to imagine they had 100,000 US dollars (USD) to fit the
+context in which the data was collected. 100,000 HKD is approximately
+equivalent to 13,000 USD. Shavit consulted the first author of the
+original study about how to reconcile this discrepancy and was told to
+instruct participants to imagine having 100,000 USD rather than an
+amount equivalent to 100,000 HKD. Because this study focuses on how much
+participants are relatively willing to donate to others as a function of
+how close they are and whether they are related to them, rather than the
+absolute amount they are willing to donate, I feel there should be
+minimal issues with this approach.</p></li>
+<li><p>In the original study, older participants’ cognitive function was
+assessed using the cognitive subscale of the Alzheimers’ Disease
+Assessment Scale (ADAS-Cog) to ensure the results would not be
+confounded with cognitive function. Because this is not a computer-based
+test, it was not used in the replication study. This seems unlikely to
+have been an issue because, in the original study, cognitive function
+and willingness to donate were not significantly correlated.</p></li>
+<li><p>Because the replication study was conducted online, Shavit
+included a simple attention check and excluded participants who failed
+it.</p></li>
+<li><p>The authors of the original study fit the hyperbolic discount
+function to the data using Matlab, but Shavit did this using the “optim”
+function from the ‘stats’ package in R. Shavit was able to obtain
+similar results to the original authors when testing this procedure a
+priori using simulated data, suggesting that differences in the results
+were not an artefact of different software being used for
+analysis.</p></li>
+<li><p>The authors of the original study did not report how they dealt
+with missing data. In the replication study, Shavit excluded
+participants with missing AUC values from analysis.</p></li>
+<li><p>In the original study, the younger adult group was comprised of
+participants aged between 18 and 44. Shavit elected to collect data from
+participants aged between 18 and 35. Additionally, the youngest
+participant/s in the older adult group in the original study was/were
+60, but the youngest participant/s in the older adult group in the
+replication study was/were 57 because of constraints with regard to
+participant screening on Mechanical Turk.</p></li>
+<li><p>The authors of the original study did not report using any
+post-hoc correction when conducting t-tests. In the replication study,
+Shavit reported the results of t-tests both with and without Bonferroni
+correction.</p></li>
+</ol>
+</div>
+<div id="methods" class="section level2">
+<h2>Methods</h2>
+<div id="power-analysis" class="section level3">
+<h3>Power Analysis</h3>
+<p>Original effect size, power analysis for samples to achieve 80%, 90%,
+95% power to detect that effect size. Considerations of feasibility for
+selecting planned sample size.</p>
+<p>How much power does your planned sample have for original effect? For
+an attenuated effect that is half the size of the original?</p>
+<p>(If power analysis is not possible or precise, discuss more fully how
+you determined a sample size that would be sufficient for rescue.)</p>
+</div>
+<div id="planned-sample" class="section level3">
+<h3>Planned Sample</h3>
+<p>Planned sample size will be based on power analysis. I will collect
+data from both a younger sample (aged between 18 and 44, following the
+original study) and an older sample (aged above 60, following the
+original study). The author of the replication study suggested that
+cultural differences may have driven the failure to replicate. I will
+not be able to collect data specifically from Hong Kong Chinese
+participants as in the original study due to a dearth of Hong Kong
+residents actively using Prolific, but one option may be to recruit
+participants who identify as Asian and/or list a Chinese language (e.g.,
+Mandarin, Cantonese) as their first language to try to sample people
+with more similar cultural backgrounds to the participants in the
+original study than those who participated in the first replication
+attempt.</p>
+</div>
+<div id="materials" class="section level3">
+<h3>Materials</h3>
+<p>Participants will be asked to list their gender, age, level of
+education, and household income. As a measure of core social network
+size, participants will be asked to estimate the number of important
+friends and family they have in their lives.</p>
+<p>Participants will then be asked to complete hypothetical donation
+tasks for both relatives and non-relatives. The initial instruction will
+be as follows: “The following task asks you to imagine that you have a
+list of 100 relatives (non-relatives) arranged in descending order of
+their closeness with you. The person at position #1 is your closest
+relative (non-relative), while the person at position #100 is a relative
+(non-relative) you may know but are not close at all. You do not have to
+actually create the list – just imagine that you have done so. Next you
+will be asked to answer questions regarding these relatives
+(non-relatives) at a given position.”</p>
+<p>Participants will then be asked 14 questions regarding how much money
+and time they would be willing to donate to the relatives and
+non-relatives at each of the following positions on those lists: 1st,
+2nd, 5th, 10th, 20th, 50th, and 100th. The questions will read as
+follows: “Imagine that the relative (non-relative) at position N on your
+list is now hospitalized. He/she needs to be accompanied and taken care
+of in the hospital, as well as a large amount of money to pay for the
+medical expense. If you now own 100 thousand of US dollars and 100 days
+of vacation, how much money would you donate to him/her, and how many
+days would you spend taking care of him/her?”</p>
+<p>The only difference between the materials described here and those
+used in the original study is that participants will be asked to imagine
+they have 100,000 US dollars rather than 10,000 HK dollar, following the
+instructions given to the author of the first replication attempt from
+the first author of the original study.</p>
+</div>
+<div id="procedure" class="section level3">
+<h3>Procedure</h3>
+<p>Participants will be asked to complete a Qualtrics survey containing
+the measures described above in the order they appear above.</p>
+</div>
+<div id="controls" class="section level3">
+<h3>Controls</h3>
+<p>Following the first replication attempt, I will include a simple
+attention check. After participants are asked how much time and money
+they would be willing to donate to a relative at position 20 on their
+list, they will also be asked the following question: “In the last
+question, your answers referred to the participant in position:” with 3,
+7, 12, 16, 20, 28, and 42 as answer choices. Participants who do not
+answer ‘20’ will be excluded from analysis.</p>
+</div>
+<div id="analysis-plan" class="section level3">
+<h3>Analysis Plan</h3>
+<p>Firstly, identifiable information will be removed from the data set.
+Next, I will follow the analysis plan outlined in the original
+study:</p>
+<blockquote>
+<p>To analyze the donation data, we first modeled the group donation
+data. For each age × donation form × kinship cell, a hyperbolic discount
+function (i.e., Equation 1) was fit to the group median values (Jones
+&amp; Rachlin, 2006; Rachlin &amp; Jones, 2007, 2008) over the seven
+social distances (N = 1, 2, 5, 10, 20, 50, and 100): <span class="math display">\[v=V/(1+kN)\]</span> where V is the undiscounted
+reward value, v is the reward value that a person would like to forgo
+for the benefit for someone at a social distance N, and k is a constant
+indexing degree of social discounting (i.e., discount rate) across
+social distances. Following the convention of the literature, group
+median values instead of mean values were used because such data were
+usually not normally distributed (e.g., Jones &amp; Rachlin, 2006).</p>
+</blockquote>
+<blockquote>
+<p>The fitting process was conducted by curve fit toolbox of Matlab
+(version 2015a), where R-square and root-mean-square error (RMSE) were
+used to assess the goodness of fit. Such a modeling technique has been
+widely used in the literature on temporal (e.g., Frederick, Loewenstein,
+&amp; O’Donoghue, 2002) and social discounting (e.g., Jones &amp;
+Rachlin, 2006). The technique enables us to sketch individuals’ donation
+willingness across various social distances with simple parameters like
+discount rate (k) and area under curve (AUC) (e.g., Jones &amp; Rachlin,
+2006; Margittai et al., 2015). Discount rate (k) reflects a donor’s
+social-distance dependent selectivity as to donation willingness—a
+larger k value indicates a higher level of selectivity, that is, the
+donor treats socially close and distant recipients more differently. AUC
+could be used to index the donor’s overall generosity to people
+independent of social distance, with a larger value indicating a higher
+level of generosity (Margittai et al., 2015; Strombach et al.,
+2014).</p>
+</blockquote>
+<blockquote>
+<p>Once the appropriateness of the hyperbolic discount function was
+confirmed for group data, we then conducted the same fitting process to
+individual data to get the discount rate (k) and the AUC for each
+participant under different conditions. Again following the convention
+of the literature, individual data that did not fit the hyperbolic
+discount function were excluded from further analyses (Vuchinich &amp;
+Simpson, 1998). The individuals’ k and AUC values were then normalized
+by a natural logarithm transformation (e.g., Margittai et al., 2015),
+and transformed values that exceeded ±3 SDs were treated as
+outliers.</p>
+</blockquote>
+<blockquote>
+<p>Next, the transformed individual k and AUC values were correlated
+with demographic variables to preliminarily check the influences of
+demographic variables on donation willingness. To examine the moderating
+roles of donation form and kinship in the relation between age and
+donation willingness, the transformed individual AUC values and k values
+were submitted respectively to a 2 (age: younger and older) × 2
+(donation form: money and time) × 2 (kinship: relatives and
+nonrelatives) mixed design, repeated measures ANOVA (and post hoc
+tests), with and without controlling for demographic variables.</p>
+</blockquote>
+<p>I will depart from the above analysis plan only in that I will use R
+rather than Matlab to conduct curve fitting and analyse data.
+Additionally, as in the first replication attempt, I will report the
+results of t-tests both with and without applying Bonferroni
+correction.</p>
+<p>The key analysis of interest is the mixed design, repeated measures
+ANOVA of transformed AUC values controlling for demographic
+variables.</p>
+</div>
+<div id="differences-from-original-study-and-1st-replication" class="section level3">
+<h3>Differences from Original Study and 1st replication</h3>
+<ol style="list-style-type: decimal">
+<li><p>Data will be collected on Prolific rather than in person (as in
+the original study) or on Mechanical Turk (as in the first replication
+attempt). This is unlikely to make a difference to the results because
+this is a survey study.</p></li>
+<li><p>The original study’s participants were Hong Kong Chinese adults
+living in Hong Kong, whereas the first replication attempt sampled
+residents of the United States of any ethnicity. Rather than recruiting
+participants who live in a specific country, I will recruit participants
+who identify as Asian and/or list a Chinese language (e.g., Mandarin,
+Cantonese) as their first language to attempt to sample people with a
+relatively similar cultural background to the original study’s
+participants. If cultural differences were indeed implicated in the
+failure to replicate, this strategy may increase the chances of
+replicating the original study’s findings.</p></li>
+</ol>
+</div>
+<div id="methods-addendum-post-data-collection" class="section level3">
+<h3>Methods Addendum (Post Data Collection)</h3>
+<p>You can comment this section out prior to final report with data
+collection.</p>
+<div id="actual-sample" class="section level4">
+<h4>Actual Sample</h4>
+<p>Sample size, demographics, data exclusions based on rules spelled out
+in analysis plan</p>
+</div>
+<div id="differences-from-pre-data-collection-methods-plan" class="section level4">
+<h4>Differences from pre-data collection methods plan</h4>
+<p>Any differences from what was described as the original plan, or
+“none”.</p>
+</div>
+</div>
+</div>
+<div id="results" class="section level2">
+<h2>Results</h2>
+<div id="data-preparation" class="section level3">
+<h3>Data preparation</h3>
+<ol style="list-style-type: decimal">
+<li>Load relevant libraries</li>
+<li>Write function to compute hyperbolic function</li>
+<li>Write function to compute RMSE</li>
+<li>Import data</li>
+<li>Remove identifying information and extraneous variables</li>
+<li>Group participants based on age (create an ‘age group’ column where
+participants are listed as either ‘younger’ or ‘older’)</li>
+<li>For each age × donation form × kinship cell, fit hyperbolic discount
+function (i.e., Equation 1) to group median values over seven social
+distances (N = 1, 2, 5, 10, 20, 50, and 100)</li>
+<li>Check goodness of fit using R-square and RMSE</li>
+<li>Fit hyperbolic discount function to individual data and calculate k
+and AUC values for each participant in each condition</li>
+<li>Exclude participants whose data does not fit hyperbolic discount
+function</li>
+<li>Normalise individual k and AUC values via natural log
+transformation</li>
+<li>Exclude individuals with transformed values that exceed ±3 SDs</li>
+<li>Correlational analyses on demographic variables and transformed
+individual k/AUC values</li>
+</ol>
+</div>
+<div id="results-of-control-measures" class="section level3">
+<h3>Results of control measures</h3>
+<ol style="list-style-type: decimal">
+<li>Exclude participants who failed attention check</li>
+</ol>
+</div>
+<div id="confirmatory-analysis" class="section level3">
+<h3>Confirmatory analysis</h3>
+<ol style="list-style-type: decimal">
+<li>2 (age: younger vs older) × 2 (donation form: money vs time) × 2
+(kinship: relatives vs non-relatives) mixed design, repeated measures
+ANOVA of transformed individual AUC values, with demographic variables
+as control + post-hoc tests if applicable</li>
+<li>2 (age: younger vs older) × 2 (donation form: money vs time) × 2
+(kinship: relatives vs non-relatives) mixed design, repeated measures
+ANOVA of transformed individual AUC values, without demographic
+variables as control + post-hoc tests if applicable</li>
+<li>2 (age: younger vs older) × 2 (donation form: money vs time) × 2
+(kinship: relatives vs non-relatives) mixed design, repeated measures
+ANOVA of transformed individual k values, with demographic variables as
+control + post-hoc tests if applicable</li>
+<li>2 (age: younger vs older) × 2 (donation form: money vs time) × 2
+(kinship: relatives vs non-relatives) mixed design, repeated measures
+ANOVA of transformed individual k values, without demographic variables
+as control + post-hoc tests if applicable</li>
+</ol>
+<p><em>Three-panel graph with original, 1st replication, and your
+replication is ideal here</em></p>
+</div>
+<div id="exploratory-analyses" class="section level3">
+<h3>Exploratory analyses</h3>
+<p>Any follow-up analyses desired (not required).</p>
+</div>
+</div>
+<div id="discussion" class="section level2">
+<h2>Discussion</h2>
+</div>
+<div id="mini-meta-analysis" class="section level2">
+<h2>Mini meta analysis</h2>
+<p>Combining across the original paper, 1st replication, and 2nd
+replication, what is the aggregate effect size?</p>
+<div id="summary-of-replication-attempt" class="section level3">
+<h3>Summary of Replication Attempt</h3>
+<p>Open the discussion section with a paragraph summarizing the primary
+result from the confirmatory analysis and the assessment of whether it
+replicated, partially replicated, or failed to replicate the original
+result.</p>
+</div>
+<div id="commentary" class="section level3">
+<h3>Commentary</h3>
+<p>Add open-ended commentary (if any) reflecting (a) insights from
+follow-up exploratory analysis, (b) assessment of the meaning of the
+replication (or not) - e.g., for a failure to replicate, are the
+differences between original and present study ones that definitely,
+plausibly, or are unlikely to have been moderators of the result, and
+(c) discussion of any objections or challenges raised by the current and
+original authors about the replication attempt. None of these need to be
+long.</p>
+</div>
 </div>
 
 
