@@ -6,6 +6,7 @@ format:
   html:
     toc: true
     toc_depth: 3
+output: github_document
 ---
 
 <!-- Replication reports should all use this template to standardize reporting across projects.  These reports will be public supplementary materials that accompany the summary report(s) of the aggregate results. -->
