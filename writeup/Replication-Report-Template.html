@@ -11,7 +11,7 @@
 
 <meta name="author" content="Raphael Uricher (Email: ruricher@stanford.edu)" />
 
-<meta name="date" content="2023-10-22" />
+<meta name="date" content="2023-10-29" />
 
 <title>Replication of ‘Are Older Adults More Willing to Donate? The Roles of Donation Form and Social Relationship’ by Gong, Zhang &amp; Fung (2019, The Journals of Gerontology: Series B)</title>
 
@@ -361,7 +361,7 @@ Willing to Donate? The Roles of Donation Form and Social Relationship’
 by Gong, Zhang &amp; Fung (2019, The Journals of Gerontology: Series
 B)</h1>
 <h4 class="author">Raphael Uricher (Email: <a href="mailto:ruricher@stanford.edu" class="email">ruricher@stanford.edu</a>)</h4>
-<h4 class="date">October 22, 2023</h4>
+<h4 class="date">October 29, 2023</h4>
 
 </div>
 
@@ -429,6 +429,8 @@ developing.</p>
 Repository</a></p>
 <p><a href="https://github.com/psych251/gong2019_rescue/blob/main/original_paper/gbx099.pdf">Original
 Paper</a></p>
+<p><a href="https://stanforduniversity.qualtrics.com/jfe/form/SV_4Trmek4bc8vVDp4">Link
+to Qualtrics survey</a></p>
 </div>
 <div id="summary-of-prior-replication-attempt" class="section level2">
 <h2>Summary of prior replication attempt</h2>
@@ -557,9 +559,9 @@ of vacation, how much money would you donate to him/her, and how many
 days would you spend taking care of him/her?”</p>
 <p>The only difference between the materials described here and those
 used in the original study is that participants will be asked to imagine
-they have 100,000 US dollars rather than 10,000 HK dollar, following the
-instructions given to the author of the first replication attempt from
-the first author of the original study.</p>
+they have 100,000 US dollars rather than 10,000 HK dollars, following
+the instructions given to the author of the first replication attempt
+from the first author of the original study.</p>
 </div>
 <div id="procedure" class="section level3">
 <h3>Procedure</h3>
@@ -683,20 +685,650 @@ in analysis plan</p>
 <h2>Results</h2>
 <div id="data-preparation" class="section level3">
 <h3>Data preparation</h3>
-<ol style="list-style-type: decimal">
-<li>Load relevant libraries</li>
-<li>Write function to compute hyperbolic function</li>
-<li>Write function to compute RMSE</li>
-<li>Import data</li>
-<li>Remove identifying information and extraneous variables</li>
-<li>Group participants based on age (create an ‘age group’ column where
-participants are listed as either ‘younger’ or ‘older’)</li>
-<li>For each age × donation form × kinship cell, fit hyperbolic discount
+<p>Load relevant libraries</p>
+<pre class="r"><code>library(knitr)
+library(tidyverse)</code></pre>
+<pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.2     ✔ readr     2.1.4
+## ✔ forcats   1.0.0     ✔ stringr   1.5.0
+## ✔ ggplot2   3.4.3     ✔ tibble    3.2.1
+## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+## ✔ purrr     1.0.2     
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(car)</code></pre>
+<pre><code>## Loading required package: carData
+## 
+## Attaching package: &#39;car&#39;
+## 
+## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     recode
+## 
+## The following object is masked from &#39;package:purrr&#39;:
+## 
+##     some</code></pre>
+<pre class="r"><code>library(ez)
+library(broom)
+library(pander)
+library(kableExtra)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;kableExtra&#39;
+## 
+## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     group_rows</code></pre>
+<pre class="r"><code>library(lme4)</code></pre>
+<pre><code>## Loading required package: Matrix
+## 
+## Attaching package: &#39;Matrix&#39;
+## 
+## The following objects are masked from &#39;package:tidyr&#39;:
+## 
+##     expand, pack, unpack</code></pre>
+<pre class="r"><code>library(lmerTest)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;lmerTest&#39;
+## 
+## The following object is masked from &#39;package:lme4&#39;:
+## 
+##     lmer
+## 
+## The following object is masked from &#39;package:stats&#39;:
+## 
+##     step</code></pre>
+<pre class="r"><code>library(effsize)
+library(RColorBrewer)</code></pre>
+<p>Write function to compute hyperbolic function</p>
+<pre class="r"><code>discount &lt;- function (V, k, N) {
+  nu &lt;- V / (1 + k * N)
+  
+  return(nu)
+}</code></pre>
+<p>Write function to compute RMSE</p>
+<pre class="r"><code>data_vs_discount &lt;- function(V, k, N, amount) {
+  nu &lt;- discount(V, k, N)
+  
+  RMSE &lt;- sqrt(mean((amount - nu)^2))
+  
+  return(RMSE)
+}</code></pre>
+<p>Import data</p>
+<pre class="r"><code>df = read.csv(&quot;psych251_pilot_data.csv&quot;, header=T)
+df &lt;- tail(df, -2)</code></pre>
+<p>Remove identifying information and extraneous variables</p>
+<pre class="r"><code>df = select(df, -1:-17)</code></pre>
+<p>Add subject IDs</p>
+<pre class="r"><code>df$id &lt;- 1:5 </code></pre>
+<p>Remove participants who failed attention check</p>
+<pre class="r"><code>df = filter(df, attention_check==5)</code></pre>
+<p>Group participants based on age (create an ‘age group’ column where
+participants are listed as either ‘younger’ or ‘older’)</p>
+<pre class="r"><code>df &lt;- df%&gt;%
+  mutate(age_group = dplyr::case_when(age &lt;= 35 ~ &quot;younger&quot;, age &gt; 60 ~ &quot;older&quot;),
+         age_group = factor(age_group, level = c(&quot;younger&quot;, &quot;older&quot;))
+  )
+
+summary(df$age_group)</code></pre>
+<pre><code>## younger   older 
+##       2       1</code></pre>
+<p>Converting critical variables to numeric</p>
+<pre class="r"><code>df[,c(1:38)]=as.numeric(unlist(df[,c(1:38)]))</code></pre>
+<p>Making data set longer</p>
+<pre class="r"><code>og_lng=df%&gt;%
+  gather(condition, amount, c(matches(&quot;_money&quot;),matches(&quot;_time&quot;))
+         )%&gt;%
+  separate(condition, c(&quot;kin&quot;, &quot;soc_dist&quot;, &quot;donation&quot;), &quot;_&quot;)%&gt;%
+  spread(kin, amount)%&gt;%
+  gather(kinship, amount,
+         rel, nonrel)</code></pre>
+<p>For each age × donation form × kinship cell, fit hyperbolic discount
 function (i.e., Equation 1) to group median values over seven social
-distances (N = 1, 2, 5, 10, 20, 50, and 100)</li>
+distances (N = 1, 2, 5, 10, 20, 50, and 100)</p>
+<pre class="r"><code>#create df with monetary amounts divided by 1000 for plotting and analyses (to have the same units for time and money donations)
+df_og2=df%&gt;%mutate(rel_1_money=rel_1_money/1000, 
+                      rel_2_money=rel_2_money/1000, 
+                      rel_5_money=rel_5_money/1000, 
+                      rel_10_money=rel_10_money/1000, 
+                      rel_20_money=rel_20_money/1000, 
+                      rel_50_money=rel_50_money/1000, 
+                      rel_100_money=rel_100_money/1000, 
+                      nonrel_1_money=nonrel_1_money/1000, 
+                      nonrel_2_money=nonrel_2_money/1000, 
+                      nonrel_5_money=nonrel_5_money/1000, 
+                      nonrel_10_money=nonrel_10_money/1000, 
+                      nonrel_20_money=nonrel_20_money/1000, 
+                      nonrel_50_money=nonrel_50_money/1000, 
+                      nonrel_100_money=nonrel_100_money/1000)
+
+#long-form this dataframe
+og_lng2=df_og2%&gt;%
+  gather(condition, amount, c(matches(&quot;_money&quot;),matches(&quot;_time&quot;))
+         )%&gt;%
+  separate(condition, c(&quot;kin&quot;, &quot;soc_dist&quot;, &quot;donation&quot;), &quot;_&quot;)%&gt;%
+  spread(kin, amount)%&gt;%
+  gather(kinship, amount,
+         rel,nonrel)
+
+#set variable soc_dist to be numeric in both dataframes
+#original df
+og_lng$soc_dist=as.character(og_lng$soc_dist)
+og_lng$soc_dist=as.numeric(og_lng$soc_dist)
+is.numeric(og_lng$soc_dist)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>#df for plotting and analysis
+og_lng2$soc_dist=as.character(og_lng2$soc_dist)
+og_lng2$soc_dist=as.numeric(og_lng2$soc_dist)
+is.numeric(og_lng2$soc_dist)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>#create table with original median values
+med_table=og_lng%&gt;%group_by(age_group,kinship,donation,soc_dist)%&gt;%summarise(med_amnt=median(amount))</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;age_group&#39;, &#39;kinship&#39;, &#39;donation&#39;. You can
+## override using the `.groups` argument.</code></pre>
+<pre class="r"><code>#create table of median values with the transformed monetary amounts
+med_table2=og_lng2%&gt;%group_by(age_group,kinship,donation,soc_dist)%&gt;%summarise(med_amnt=median(amount))</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;age_group&#39;, &#39;kinship&#39;, &#39;donation&#39;. You can
+## override using the `.groups` argument.</code></pre>
+<ol start="8" style="list-style-type: decimal">
 <li>Check goodness of fit using R-square and RMSE</li>
+</ol>
+<pre class="r"><code>#define dataset
+d=med_table2
+
+#create empty vectors to store values
+age_group=vector(mode=&quot;character&quot;,length=0); donation=vector(mode=&quot;character&quot;,length=0); kinship=vector(mode=&quot;character&quot;,length=0); V_values=vector(mode=&quot;numeric&quot;,length=0); k_values=vector(mode=&quot;numeric&quot;,length=0); RMSE=vector(mode=&quot;numeric&quot;,length=0); R_sq=vector(mode=&quot;numeric&quot;,length=0)
+
+#run for each age group, extract values for donation * kinship conditions
+
+for(i in unique(d$age_group)){
+  
+  d_money_rel=d%&gt;%filter(age_group==i, donation==&quot;money&quot;, kinship==&quot;rel&quot;) #-&gt; create temp df to get values from
+  age_group=c(age_group,i) #-&gt; store the appropriate age group
+  donation=c(donation, &quot;money&quot;) #-&gt; store the appropriate donation
+  kinship=c(kinship, &quot;rel&quot;) #-&gt; store the appropriate kinship
+  optim_discount_wrapper &lt;- function(x) { #-&gt; define discount wrapper to get V, k, and RMSE values for this                                                      condition
+  return(data_vs_discount(V = x[1], k = x[2],  
+                          N = d_money_rel$soc_dist, 
+                          amount = d_money_rel$med_amnt))
+}
+
+  opt1=optim(c(100, 0.2), optim_discount_wrapper, method = &quot;L-BFGS-B&quot;, lower=c(0,0), upper=c(300,100)) #-&gt; run discount_wrapper
+  V_values=c(V_values,opt1$par[1]) #-&gt; store resulting V_value
+  k_values=c(k_values, opt1$par[2]) #-&gt; store resulting k_value
+  RMSE=c(RMSE, opt1$value) #-&gt; store resulting RMSE value
+  d_money_rel$pred=discount(V = opt1$par[1], k = opt1$par[2],N = d_money_rel$soc_dist) #-&gt; store predictions in temp                                                                                          dataset
+  cor1=cor.test(d_money_rel$med_amnt, d_money_rel$pred) #-&gt; run cor.test to get correlation of predictions and data
+  R_sq=c(R_sq, (cor1$estimate)^2) #-&gt; square the estimate (pearson&#39;s R) to get R^2.
+  
+  
+  d_money_nonrel=d%&gt;%filter(age_group==i, donation==&quot;money&quot;, kinship==&quot;nonrel&quot;) #-&gt; do all of this for the next donation                                                                               * Kinship condition
+  age_group=c(age_group,i)
+  donation=c(donation, &quot;money&quot;)
+  kinship=c(kinship, &quot;nonrel&quot;)
+  optim_discount_wrapper &lt;- function(x) {
+  return(data_vs_discount(V = x[1], k = x[2],  
+                          N = d_money_nonrel$soc_dist, 
+                          amount = d_money_nonrel$med_amnt))
+}
+
+  opt2=optim(c(100, 0.2), optim_discount_wrapper, method = &quot;L-BFGS-B&quot;, lower=c(0,0), upper=c(300,100))
+  V_values=c(V_values,opt2$par[1])
+  k_values=c(k_values, opt2$par[2])
+  RMSE=c(RMSE, opt2$value)
+  d_money_nonrel$pred=discount(V = opt2$par[1], k = opt2$par[2],N = d_money_nonrel$soc_dist)
+  cor2=cor.test(d_money_nonrel$med_amnt, d_money_nonrel$pred)
+  R_sq=c(R_sq, (cor2$estimate)^2)
+
+
+  d_time_rel=d%&gt;%filter(age_group==i, donation==&quot;time&quot;, kinship==&quot;rel&quot;)
+  age_group=c(age_group,i)
+  donation=c(donation, &quot;time&quot;)
+  kinship=c(kinship, &quot;rel&quot;)
+  optim_discount_wrapper &lt;- function(x) {
+  return(data_vs_discount(V = x[1], k = x[2],  
+                          N = d_time_rel$soc_dist, 
+                          amount = d_time_rel$med_amnt))
+}
+
+  opt3=optim(c(100, 0.2), optim_discount_wrapper, method = &quot;L-BFGS-B&quot;, lower=c(0,0), upper=c(300,100))
+  V_values=c(V_values,opt3$par[1])
+  k_values=c(k_values, opt3$par[2])
+  RMSE=c(RMSE, opt3$value)
+  d_time_rel$pred=discount(V = opt3$par[1], k = opt3$par[2],N = d_time_rel$soc_dist)
+  cor3=cor.test(d_time_rel$med_amnt, d_time_rel$pred)
+  R_sq=c(R_sq, (cor3$estimate)^2)
+
+  
+  d_time_nonrel=d%&gt;%filter(age_group==i, donation==&quot;time&quot;, kinship==&quot;nonrel&quot;)
+  age_group=c(age_group,i)
+  donation=c(donation, &quot;time&quot;)
+  kinship=c(kinship, &quot;nonrel&quot;)
+  optim_discount_wrapper &lt;- function(x) {
+  return(data_vs_discount(V = x[1], k = x[2],  
+                          N = d_time_nonrel$soc_dist, 
+                          amount = d_time_nonrel$med_amnt))
+}
+
+  opt4=optim(c(100, 0.2), optim_discount_wrapper, method = &quot;L-BFGS-B&quot;, lower=c(0,0), upper=c(300,100))
+  V_values=c(V_values,opt4$par[1])
+  k_values=c(k_values, opt4$par[2])
+  RMSE=c(RMSE, opt4$value)
+  d_time_nonrel$pred=discount(V = opt4$par[1], k = opt4$par[2],N = d_time_nonrel$soc_dist)
+  cor4=cor.test(d_time_nonrel$med_amnt, d_time_nonrel$pred)
+  R_sq=c(R_sq, (cor4$estimate)^2)
+
+}
+
+#Add all vectors to one dataset
+med_smry=as.data.frame(cbind(`Age group`=age_group, Donation=donation, Kinship=kinship, V=V_values, k=k_values, `R sqr`=R_sq, RMSE), row.names = F)%&gt;%mutate(V=as.character(V), k=as.character(k), `R sqr`=as.character(`R sqr`), RMSE=as.character(RMSE))%&gt;%mutate(V=as.numeric(V), k=as.numeric(k), `R sqr`=as.numeric(`R sqr`), RMSE=as.numeric(RMSE))
+
+kable(med_smry, digits = 2, align = &quot;c&quot;, caption = &quot;Estimated Parameters and Goodness-of-fit Indices of the Hyperbolic Functions, group median values&quot;)</code></pre>
+<table>
+<caption>
+Estimated Parameters and Goodness-of-fit Indices of the Hyperbolic
+Functions, group median values
+</caption>
+<thead>
+<tr>
+<th style="text-align:center;">
+Age group
+</th>
+<th style="text-align:center;">
+Donation
+</th>
+<th style="text-align:center;">
+Kinship
+</th>
+<th style="text-align:center;">
+V
+</th>
+<th style="text-align:center;">
+k
+</th>
+<th style="text-align:center;">
+R sqr
+</th>
+<th style="text-align:center;">
+RMSE
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+younger
+</td>
+<td style="text-align:center;">
+money
+</td>
+<td style="text-align:center;">
+rel
+</td>
+<td style="text-align:center;">
+55.16
+</td>
+<td style="text-align:center;">
+0.03
+</td>
+<td style="text-align:center;">
+0.90
+</td>
+<td style="text-align:center;">
+6.03
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+younger
+</td>
+<td style="text-align:center;">
+money
+</td>
+<td style="text-align:center;">
+nonrel
+</td>
+<td style="text-align:center;">
+66.35
+</td>
+<td style="text-align:center;">
+0.17
+</td>
+<td style="text-align:center;">
+0.89
+</td>
+<td style="text-align:center;">
+8.48
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+younger
+</td>
+<td style="text-align:center;">
+time
+</td>
+<td style="text-align:center;">
+rel
+</td>
+<td style="text-align:center;">
+78.95
+</td>
+<td style="text-align:center;">
+0.06
+</td>
+<td style="text-align:center;">
+0.94
+</td>
+<td style="text-align:center;">
+6.39
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+younger
+</td>
+<td style="text-align:center;">
+time
+</td>
+<td style="text-align:center;">
+nonrel
+</td>
+<td style="text-align:center;">
+121.65
+</td>
+<td style="text-align:center;">
+0.25
+</td>
+<td style="text-align:center;">
+0.97
+</td>
+<td style="text-align:center;">
+5.37
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+older
+</td>
+<td style="text-align:center;">
+money
+</td>
+<td style="text-align:center;">
+rel
+</td>
+<td style="text-align:center;">
+84.67
+</td>
+<td style="text-align:center;">
+0.53
+</td>
+<td style="text-align:center;">
+0.91
+</td>
+<td style="text-align:center;">
+7.42
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+older
+</td>
+<td style="text-align:center;">
+money
+</td>
+<td style="text-align:center;">
+nonrel
+</td>
+<td style="text-align:center;">
+300.00
+</td>
+<td style="text-align:center;">
+5.20
+</td>
+<td style="text-align:center;">
+0.96
+</td>
+<td style="text-align:center;">
+4.93
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+older
+</td>
+<td style="text-align:center;">
+time
+</td>
+<td style="text-align:center;">
+rel
+</td>
+<td style="text-align:center;">
+165.03
+</td>
+<td style="text-align:center;">
+0.51
+</td>
+<td style="text-align:center;">
+0.95
+</td>
+<td style="text-align:center;">
+10.66
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+older
+</td>
+<td style="text-align:center;">
+time
+</td>
+<td style="text-align:center;">
+nonrel
+</td>
+<td style="text-align:center;">
+300.00
+</td>
+<td style="text-align:center;">
+2.29
+</td>
+<td style="text-align:center;">
+0.98
+</td>
+<td style="text-align:center;">
+7.04
+</td>
+</tr>
+</tbody>
+</table>
+<ol start="9" style="list-style-type: decimal">
 <li>Fit hyperbolic discount function to individual data and calculate k
 and AUC values for each participant in each condition</li>
+</ol>
+<pre class="r"><code>#Create the empty dataframe, in which each participant have 4 rows
+df2=as.data.frame(cbind(
+  id=rep(unique(og_lng2$id),4),
+  age_group=c(),
+  gender=c(),
+  education=c(),
+  income=c(),
+  social_network_size=c(),
+  ethnicity=c(),
+  kinship=c(),
+  donation=c(),
+  k=c(),
+  AUC=c()
+))
+
+#Fill in values for demographics (age, age group, gender, education, income, social_network_size)
+for (i in unique(df2$id)){
+  df_sub=filter(df_og2, id==i)
+  df2[df2$id==i, &#39;age&#39;]=df_sub$age
+  df2[df2$id==i, &#39;age_group&#39;]=df_sub$age_group
+  df2[df2$id==i, &#39;gender&#39;]=df_sub$gender
+  df2[df2$id==i, &#39;education&#39;]=df_sub$education
+  df2[df2$id==i, &#39;income&#39;]=df_sub$income
+  df2[df2$id==i, &#39;social_network_size&#39;]=df_sub$social_network_size
+  df2[df2$id==i, &#39;ethnicity&#39;]=df_sub$ethnicity
+}</code></pre>
+<pre class="r"><code>df2=as.data.frame(cbind(
+  id=rep(unique(og_lng2$id),4),
+  age_group=c(),
+  gender=c(),
+  education=c(),
+  income=c(),
+  social_network_size=c(),
+  ethnicity=c(),
+  kinship=c(),
+  donation=c(),
+  k=c(),
+  AUC=c()
+))
+
+#Fill in values for demographics
+for (i in unique(df2$id)){
+  df_sub=filter(df_og2, id==i)
+  df2[df2$id==i, &#39;age&#39;]=df_sub$age
+  df2[df2$id==i, &#39;age_group&#39;]=df_sub$age_group
+  df2[df2$id==i, &#39;gender&#39;]=df_sub$gender
+  df2[df2$id==i, &#39;education&#39;]=df_sub$education
+  df2[df2$id==i, &#39;income&#39;]=df_sub$income
+  df2[df2$id==i, &#39;social_network_size&#39;]=df_sub$social_network_size
+  df2[df2$id==i, &#39;ethnicity&#39;]=df_sub$ethnicity
+}</code></pre>
+<pre class="r"><code>#for each individual, extract values for donation * kinship conditions
+
+#set variable soc_dist in og_lng2 to be numeric
+og_lng2$soc_dist=as.character(og_lng2$soc_dist)
+og_lng2$soc_dist=as.numeric(og_lng2$soc_dist)
+is.numeric(og_lng2$soc_dist)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>#Get length of number of participants (n) as value
+n_p=length(unique(df2$id))
+
+#Create 4 temporary df&#39;s to store values from each iteration
+df2_mr=df2[1:n_p,] #-&gt; for money_relative
+df2_mnr=df2[(n_p+1):(n_p*2),] #-&gt;for money_nonrelative
+df2_tr=df2[(2*n_p+1):(n_p*3),] #-&gt;for time_relative
+df2_tnr=df2[(3*n_p+1):(n_p*4),] #-&gt;for time_nonrel
+
+
+#run discount wrapper for each subject in 2*2 conditions
+for(i in unique(df2$id)){
+  #money relative
+  d_mon_rel=og_lng2%&gt;%filter(id==i, donation==&quot;money&quot;, kinship==&quot;rel&quot;) #-&gt; create temp df to get values from
+  df2_mr[df2_mr$id==i, &#39;donation&#39;]=&quot;money&quot; #-&gt; store the appropriate donation
+  df2_mr[df2_mr$id==i, &#39;kinship&#39;]=&quot;rel&quot; #-&gt; store the appropriate kinship
+  
+  optim_discount_wrapper &lt;- function(x) { #-&gt; define discount wrapper to get V, k, and RMSE values for this                                                      condition
+  return(data_vs_discount(V = x[1], k = x[2],  
+                          N = d_mon_rel$soc_dist, 
+                          amount = d_mon_rel$amount))
+}
+
+  opt1=optim(c(100, 0.2), optim_discount_wrapper, method = &quot;L-BFGS-B&quot;, lower=c(0,0), upper=c(300,100)) #-&gt; run discount_wrapper
+  df2_mr[df2_mr$id==i, &#39;k&#39;]=opt1$par[2] #-&gt; store resulting k_value
+  df2_mr[df2_mr$id==i, &#39;V&#39;]=opt1$par[1] #-&gt; store resulting V_value
+
+  # Get AUC value - using WolframAlpha, the integral of this discount function is:
+# V/k*ln(abs(1+k*n))+c -&gt; we don&#39;t really care about c for AUC.
+  k=opt1$par[2]
+  V=opt1$par[1]
+
+  #Evaluate for upper bound
+  up=V/k*log(abs(1+k*100))
+  lower=V/k*log(abs(1+k*0))
+
+  df2_mr[df2_mr$id==i,&#39;AUC&#39;]=up-lower
+  
+#money nonrelative
+  d_mon_nonrel=og_lng2%&gt;%filter(id==i, donation==&quot;money&quot;, kinship==&quot;nonrel&quot;) 
+  df2_mnr[df2_mnr$id==i, &#39;donation&#39;]=&quot;money&quot; 
+  df2_mnr[df2_mnr$id==i, &#39;kinship&#39;]=&quot;nonrel&quot; 
+  
+  optim_discount_wrapper &lt;- function(x) { 
+  return(data_vs_discount(V = x[1], k = x[2],  
+                          N = d_mon_nonrel$soc_dist, 
+                          amount = d_mon_nonrel$amount))
+}
+
+  opt2=optim(c(100, 0.2), optim_discount_wrapper, method = &quot;L-BFGS-B&quot;, lower=c(0,0), upper=c(300,100)) 
+  df2_mnr[df2_mnr$id==i, &#39;k&#39;]=opt2$par[2] 
+  df2_mnr[df2_mnr$id==i, &#39;V&#39;]=opt2$par[1]
+
+  # Get AUC value 
+  k=opt2$par[2]
+  V=opt2$par[1]
+
+  #Evaluate for upper bound
+  up=V/k*log(abs(1+k*100))
+  lower=V/k*log(abs(1+k*0))
+
+  df2_mnr[df2_mnr$id==i,&#39;AUC&#39;]=up-lower
+  
+#time relative
+  d_time_rel=og_lng2%&gt;%filter(id==i, donation==&quot;time&quot;, kinship==&quot;rel&quot;)
+  df2_tr[df2_tr$id==i, &#39;donation&#39;]=&quot;time&quot; 
+  df2_tr[df2_tr$id==i, &#39;kinship&#39;]=&quot;rel&quot; 
+  
+  optim_discount_wrapper &lt;- function(x) { 
+  return(data_vs_discount(V = x[1], k = x[2],  
+                          N = d_time_rel$soc_dist, 
+                          amount = d_time_rel$amount))
+}
+
+  opt3=optim(c(100, 0.2), optim_discount_wrapper, method = &quot;L-BFGS-B&quot;, lower=c(0,0), upper=c(300,100)) 
+  df2_tr[df2_tr$id==i, &#39;k&#39;]=opt3$par[2]
+  df2_tr[df2_tr$id==i, &#39;V&#39;]=opt3$par[1]
+
+  # Get AUC value 
+  k=opt3$par[2]
+  V=opt3$par[1]
+
+  #Evaluate for upper bound
+  up=V/k*log(abs(1+k*100))
+  lower=V/k*log(abs(1+k*0))
+
+  df2_tr[df2_tr$id==i,&#39;AUC&#39;]=up-lower
+  
+#time nonrelative
+  d_time_nonrel=og_lng2%&gt;%filter(id==i, donation==&quot;time&quot;, kinship==&quot;nonrel&quot;)
+  df2_tnr[df2_tnr$id==i, &#39;donation&#39;]=&quot;time&quot; 
+  df2_tnr[df2_tnr$id==i, &#39;kinship&#39;]=&quot;nonrel&quot; 
+  
+  optim_discount_wrapper &lt;- function(x) { 
+  return(data_vs_discount(V = x[1], k = x[2],  
+                          N = d_time_nonrel$soc_dist, 
+                          amount = d_time_nonrel$amount))
+}
+
+  opt4=optim(c(100, 0.2), optim_discount_wrapper, method = &quot;L-BFGS-B&quot;, lower=c(0,0), upper=c(300,100)) 
+  df2_tnr[df2_tnr$id==i, &#39;k&#39;]=opt4$par[2]
+  df2_tnr[df2_tnr$id==i, &#39;V&#39;]=opt4$par[1]
+
+  # Get AUC value 
+  k=opt4$par[2]
+  V=opt4$par[1]
+
+  #Evaluate for upper bound
+  up=V/k*log(abs(1+k*100))
+  lower=V/k*log(abs(1+k*0))
+
+  df2_tnr[df2_tnr$id==i,&#39;AUC&#39;]=up-lower
+}
+
+#Combine all into one dataframe (df2)
+df2=full_join(df2_mr, df2_mnr)%&gt;%full_join(df2_tr)%&gt;%full_join(df2_tnr)</code></pre>
+<pre><code>## Joining with `by = join_by(id, age, age_group, gender, education, income,
+## social_network_size, ethnicity, donation, kinship, k, V, AUC)`
+## Joining with `by = join_by(id, age, age_group, gender, education, income,
+## social_network_size, ethnicity, donation, kinship, k, V, AUC)`
+## Joining with `by = join_by(id, age, age_group, gender, education, income,
+## social_network_size, ethnicity, donation, kinship, k, V, AUC)`</code></pre>
+<pre class="r"><code>df2_plot_pred=df2</code></pre>
+<ol start="10" style="list-style-type: decimal">
 <li>Exclude participants whose data does not fit hyperbolic discount
 function</li>
 <li>Normalise individual k and AUC values via natural log
@@ -705,12 +1337,90 @@ transformation</li>
 <li>Correlational analyses on demographic variables and transformed
 individual k/AUC values</li>
 </ol>
-</div>
-<div id="results-of-control-measures" class="section level3">
-<h3>Results of control measures</h3>
-<ol style="list-style-type: decimal">
-<li>Exclude participants who failed attention check</li>
-</ol>
+<pre class="r"><code>#recode all NaN AUC values as missing data (NA)
+for(i in 1:length(df2$id)){
+  if(is.nan(df2$AUC[i])){df2$AUC[i]=NA}else{df2$AUC[i]=df2$AUC[i]}
+}
+
+#Negative or zero AUC or k values (indicating a problem with the fitting process)
+df2$AUC=recode(df2$AUC, &quot;lo:0.01=NA&quot;)
+df2$k=recode(df2$k, &quot;lo:0.01=NA&quot;)
+
+#check if AUC is normally distributed
+AUc_hist=ggplot(data=df2, aes(x=AUC))+geom_histogram() #-&gt; strong positive skew
+logAUC_hist=ggplot(data = df2, aes(x=log(AUC)))+geom_histogram() #-&gt; looks better
+
+#check if k is normally distributed
+k_hist=ggplot(data=df2, aes(x=k))+geom_histogram() #-&gt; strong positive skew
+log_k_hist=ggplot(data = df2, aes(x=log(k)))+geom_histogram() #-&gt; looks better
+
+#Since Gong et al., used log(AUC) and log(k) for their analysis, I shall do the same
+df2$logAUC=log(df2$AUC)
+df2$log_k=log(df2$k)
+
+#compute +/- 3 S.D for logAUC and log_k values
+logAUC_hi=mean(df2$logAUC, na.rm=T)+(3*sd(df2$logAUC, na.rm = T))
+logAUC_lo=mean(df2$logAUC, na.rm=T)-(3*sd(df2$logAUC, na.rm = T))
+
+log_k_hi=mean(df2$log_k, na.rm=T)+(3*sd(df2$logAUC, na.rm = T))
+log_k_lo=mean(df2$log_k, na.rm=T)-(3*sd(df2$logAUC, na.rm = T))
+
+#df2=df2%&gt;%filter(k&lt;=(mean(k)+3*sd(k)) &amp; k&gt;=(mean(k)-3*sd(k)) &amp; AUC&lt;=(mean(AUC)+3*sd(AUC))&amp; AUC&gt;=(mean(AUC)-3*sd(AUC))) #-&gt; retain only observations that meet criteria
+
+#recode all observations outside of the +/- 3 S.D range as missing values
+df2$logAUC[df2$logAUC&lt;logAUC_lo]=NA
+df2$logAUC[df2$logAUC&gt;logAUC_hi]=NA
+
+df2$log_k[df2$log_k&lt;log_k_lo]=NA
+df2$log_k[df2$log_k&gt;log_k_hi]=NA
+
+
+#check that the minimal values are not lower than k and AUC &quot;_low&quot;&#39;s, and maximal not higher than &quot;_high&quot;&#39;s
+min(df2$log_k, na.rm = T)&lt;log_k_lo; max(df2$log_k,na.rm = T)&gt;log_k_hi; min(df2$logAUC,na.rm = T)&lt;logAUC_lo; max(df2$logAUC,na.rm = T)&gt;logAUC_hi</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<pre class="r"><code>#Change id to factor
+is.numeric(df2$id) #-&gt; true</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>df2$id=as.character(df2$id); df2$id=as.factor(df2$id)
+is.factor(df2$id)#-&gt; true</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>summary(df2$age_group); summary(df2$donation); summary(df2$kinship) </code></pre>
+<pre><code>## younger   older 
+##       8       4</code></pre>
+<pre><code>##    Length     Class      Mode 
+##        12 character character</code></pre>
+<pre><code>##    Length     Class      Mode 
+##        12 character character</code></pre>
+<pre class="r"><code># check that predictors are factors and AUC is numeric
+is.factor(df2$age_group); is.factor(df2$donation); is.factor(df2$kinship) #-&gt; age_group yes, others no</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<pre class="r"><code>is.character(df2$donation)#-&gt; true</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>df2$donation=as.factor(df2$donation); is.factor(df2$donation)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>is.character(df2$kinship)#-&gt; true</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>df2$kinship=as.factor(df2$kinship); is.factor(df2$kinship)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>is.numeric(df2$logAUC)#-&gt; True</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>## Remove all observations of subjects with outliers
+
+na_counts=df2%&gt;%group_by(id)%&gt;%summarise(naAUC_counts=sum(is.na(logAUC)),na_k_counts=sum(is.na(log_k)))%&gt;%ungroup()
+
+for (i in unique(df2$id)){
+  temp=filter(na_counts, id==i)
+  df2[df2$id==i, &#39;naAUC_counts&#39;]=temp$naAUC_counts
+  df2[df2$id==i, &#39;na_k_counts&#39;]=temp$na_k_counts
+}
+
+df2_noNA_AUC=df2%&gt;%filter(naAUC_counts==0)
+df2_noNA_k=df2%&gt;%filter(na_k_counts==0)</code></pre>
 </div>
 <div id="confirmatory-analysis" class="section level3">
 <h3>Confirmatory analysis</h3>
@@ -732,6 +1442,872 @@ control + post-hoc tests if applicable</li>
 ANOVA of transformed individual k values, without demographic variables
 as control + post-hoc tests if applicable</li>
 </ol>
+<pre class="r"><code>#AUC without covariates
+anova_AUC1=ezANOVA(data = df2_noNA_AUC, wid=.(id), dv=na.omit(logAUC), within  = .(donation, kinship), between = .(age_group), type = 3, observed = .(age_group))</code></pre>
+<pre><code>## Warning: Data is unbalanced (unequal N per group). Make sure you specified a
+## well-considered value for the type argument to ezANOVA().</code></pre>
+<pre class="r"><code>kable(anova_AUC1$ANOVA)</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+Effect
+</th>
+<th style="text-align:right;">
+DFn
+</th>
+<th style="text-align:right;">
+DFd
+</th>
+<th style="text-align:right;">
+F
+</th>
+<th style="text-align:right;">
+p
+</th>
+<th style="text-align:left;">
+p&lt;.05
+</th>
+<th style="text-align:right;">
+ges
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
+age_group
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.0139420
+</td>
+<td style="text-align:right;">
+0.9251768
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.0095837
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+donation
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.6048178
+</td>
+<td style="text-align:right;">
+0.5791976
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.1113435
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+kinship
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.0245129
+</td>
+<td style="text-align:right;">
+0.9011297
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.0009335
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:left;">
+age_group:donation
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.1827065
+</td>
+<td style="text-align:right;">
+0.7428457
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.0378495
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+6
+</td>
+<td style="text-align:left;">
+age_group:kinship
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.2752470
+</td>
+<td style="text-align:right;">
+0.6924078
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.0104922
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7
+</td>
+<td style="text-align:left;">
+donation:kinship
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.1553131
+</td>
+<td style="text-align:right;">
+0.7610079
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.0012874
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+8
+</td>
+<td style="text-align:left;">
+age_group:donation:kinship
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.1324978
+</td>
+<td style="text-align:right;">
+0.7777596
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.0010997
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>#AUC with covariates
+anova_AUC2=ezANOVA(data = df2_noNA_AUC, wid=.(id), dv=na.omit(logAUC), within  = .(donation, kinship), between = .(age_group), between_covariates = .(gender, social_network_size) ,type = 3, observed = .(age_group))</code></pre>
+<pre><code>## Warning: Data is unbalanced (unequal N per group). Make sure you specified a
+## well-considered value for the type argument to ezANOVA().</code></pre>
+<pre><code>## Warning: Implementation of ANCOVA in this version of ez is experimental and not
+## yet fully validated. Also, note that ANCOVA is intended purely as a tool to
+## increase statistical power; ANCOVA can not eliminate confounds in the data.
+## Specifically, covariates should: (1) be uncorrelated with other predictors and
+## (2) should have effects on the DV that are independent of other predictors.
+## Failure to meet these conditions may dramatically increase the rate of
+## false-positives.</code></pre>
+<pre><code>## Warning: Covariate&quot;gender&quot; is numeric and will therefore be fit to a linear
+## effect.</code></pre>
+<pre><code>## Warning: Covariate&quot;social_network_size&quot; is numeric and will therefore be fit to
+## a linear effect.</code></pre>
+<pre class="r"><code>kable(anova_AUC2$ANOVA)</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+Effect
+</th>
+<th style="text-align:right;">
+DFn
+</th>
+<th style="text-align:right;">
+DFd
+</th>
+<th style="text-align:right;">
+F
+</th>
+<th style="text-align:right;">
+p
+</th>
+<th style="text-align:left;">
+p&lt;.05
+</th>
+<th style="text-align:right;">
+ges
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
+age_group
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+3.5490049
+</td>
+<td style="text-align:right;">
+0.3106692
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.5398670
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+donation
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.6048178
+</td>
+<td style="text-align:right;">
+0.5791976
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.1129715
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+kinship
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.0245129
+</td>
+<td style="text-align:right;">
+0.9011297
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.0009489
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:left;">
+age_group:donation
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.1827065
+</td>
+<td style="text-align:right;">
+0.7428457
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.0384734
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+6
+</td>
+<td style="text-align:left;">
+age_group:kinship
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.2752470
+</td>
+<td style="text-align:right;">
+0.6924078
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.0106651
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7
+</td>
+<td style="text-align:left;">
+donation:kinship
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.1553131
+</td>
+<td style="text-align:right;">
+0.7610079
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.0013086
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+8
+</td>
+<td style="text-align:left;">
+age_group:donation:kinship
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.1324978
+</td>
+<td style="text-align:right;">
+0.7777596
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.0011178
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>#k value without covariates
+anova_k1=ezANOVA(data = df2_noNA_k, wid=.(id), dv=na.omit(log_k), within  = .(donation, kinship), between = .(age_group), type = 3, observed = .(age_group))</code></pre>
+<pre><code>## Warning: Data is unbalanced (unequal N per group). Make sure you specified a
+## well-considered value for the type argument to ezANOVA().</code></pre>
+<pre class="r"><code>kable(anova_k1$ANOVA)</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+Effect
+</th>
+<th style="text-align:right;">
+DFn
+</th>
+<th style="text-align:right;">
+DFd
+</th>
+<th style="text-align:right;">
+F
+</th>
+<th style="text-align:right;">
+p
+</th>
+<th style="text-align:left;">
+p&lt;.05
+</th>
+<th style="text-align:right;">
+ges
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
+age_group
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.0275096
+</td>
+<td style="text-align:right;">
+0.8953628
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.0214806
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+donation
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.7334202
+</td>
+<td style="text-align:right;">
+0.5491474
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.0407098
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+kinship
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.9306530
+</td>
+<td style="text-align:right;">
+0.5114358
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.0465314
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:left;">
+age_group:donation
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.2151666
+</td>
+<td style="text-align:right;">
+0.7235031
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.0124501
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+6
+</td>
+<td style="text-align:left;">
+age_group:kinship
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.6915613
+</td>
+<td style="text-align:right;">
+0.5583670
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.0362646
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7
+</td>
+<td style="text-align:left;">
+donation:kinship
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.0091784
+</td>
+<td style="text-align:right;">
+0.9391949
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.0002630
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+8
+</td>
+<td style="text-align:left;">
+age_group:donation:kinship
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.3490176
+</td>
+<td style="text-align:right;">
+0.6602931
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.0100028
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>#AUC with covariates
+anova_k2=ezANOVA(data = df2_noNA_k, wid=.(id), dv=na.omit(log_k), within  = .(donation, kinship), between = .(age_group), between_covariates = .(gender, social_network_size) ,type = 3, observed = .(age_group))</code></pre>
+<pre><code>## Warning: Data is unbalanced (unequal N per group). Make sure you specified a
+## well-considered value for the type argument to ezANOVA().</code></pre>
+<pre><code>## Warning: Implementation of ANCOVA in this version of ez is experimental and not
+## yet fully validated. Also, note that ANCOVA is intended purely as a tool to
+## increase statistical power; ANCOVA can not eliminate confounds in the data.
+## Specifically, covariates should: (1) be uncorrelated with other predictors and
+## (2) should have effects on the DV that are independent of other predictors.
+## Failure to meet these conditions may dramatically increase the rate of
+## false-positives.</code></pre>
+<pre><code>## Warning: Covariate&quot;gender&quot; is numeric and will therefore be fit to a linear
+## effect.</code></pre>
+<pre><code>## Warning: Covariate&quot;social_network_size&quot; is numeric and will therefore be fit to
+## a linear effect.</code></pre>
+<pre class="r"><code>kable(anova_k2$ANOVA)</code></pre>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+Effect
+</th>
+<th style="text-align:right;">
+DFn
+</th>
+<th style="text-align:right;">
+DFd
+</th>
+<th style="text-align:right;">
+F
+</th>
+<th style="text-align:right;">
+p
+</th>
+<th style="text-align:left;">
+p&lt;.05
+</th>
+<th style="text-align:right;">
+ges
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
+age_group
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+22.8777267
+</td>
+<td style="text-align:right;">
+0.1312087
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.7651173
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+donation
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.7334202
+</td>
+<td style="text-align:right;">
+0.5491474
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.0414521
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+kinship
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.9306530
+</td>
+<td style="text-align:right;">
+0.5114358
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.0473746
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:left;">
+age_group:donation
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.2151666
+</td>
+<td style="text-align:right;">
+0.7235031
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.0126869
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+6
+</td>
+<td style="text-align:left;">
+age_group:kinship
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.6915613
+</td>
+<td style="text-align:right;">
+0.5583670
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.0369544
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7
+</td>
+<td style="text-align:left;">
+donation:kinship
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.0091784
+</td>
+<td style="text-align:right;">
+0.9391949
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.0002680
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+8
+</td>
+<td style="text-align:left;">
+age_group:donation:kinship
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0.3490176
+</td>
+<td style="text-align:right;">
+0.6602931
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:right;">
+0.0101931
+</td>
+</tr>
+</tbody>
+</table>
 <p><em>Three-panel graph with original, 1st replication, and your
 replication is ideal here</em></p>
 </div>
