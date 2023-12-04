@@ -212,7 +212,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Next, the transformed individual k and AUC values were correlated with demographic variables to preliminarily check the influences of demographic variables on donation willingness. To examine the moderating roles of donation form and kinship in the relation between age and donation willingness, the transformed individual AUC values and k values were submitted respectively to a 2 (age: younger and older) × 2 (donation form: money and time) × 2 (kinship: relatives and nonrelatives) mixed design, repeated measures ANOVA (and post hoc tests), with and without controlling for demographic variables.</p>
 </blockquote>
 <p>I will depart from the above analysis plan only in that I will use R rather than Matlab to conduct curve fitting and analyse data. Additionally, as in the first replication attempt, I will report the results of t-tests both with and without applying Bonferroni correction.</p>
-<p>The key analysis of interest is the mixed design, repeated measures ANOVA of transformed AUC values controlling for demographic variables.</p>
+<p><strong>The key analysis of interest is the mixed design, repeated measures ANOVA of transformed AUC values controlling for demographic variables (gender, number of important family members, and number of important friends). I will be basing my decision about the success of this replication on whether there is a significant main effect of age in this ANOVA such that older adults are, across type of donation and relationship to the donation target, more generous than younger adults.</strong></p>
 </section>
 <section id="differences-from-original-study-and-1st-replication" class="level3">
 <h3 class="anchored" data-anchor-id="differences-from-original-study-and-1st-replication">Differences from Original Study and 1st replication</h3>
@@ -4163,7 +4163,7 @@ important_friends, important_family, ethnicity, donation, kinship, k, V, AUC)`</
 <section id="confirmatory-analysis" class="level3">
 <h3 class="anchored" data-anchor-id="confirmatory-analysis">Confirmatory analysis</h3>
 <ol type="1">
-<li>2 (age: younger vs older) × 2 (donation form: money vs time) × 2 (kinship: relatives vs non-relatives) mixed design, repeated measures ANOVA of transformed individual AUC values, with demographic variables as control + post-hoc tests if applicable</li>
+<li>2 (age: younger vs older) × 2 (donation form: money vs time) × 2 (kinship: relatives vs non-relatives) mixed design, repeated measures ANOVA of transformed individual AUC values, with demographic variables as control + post-hoc tests if applicable (<strong>key analysis of interest</strong>)</li>
 <li>2 (age: younger vs older) × 2 (donation form: money vs time) × 2 (kinship: relatives vs non-relatives) mixed design, repeated measures ANOVA of transformed individual AUC values, without demographic variables as control + post-hoc tests if applicable</li>
 <li>2 (age: younger vs older) × 2 (donation form: money vs time) × 2 (kinship: relatives vs non-relatives) mixed design, repeated measures ANOVA of transformed individual k values, with demographic variables as control + post-hoc tests if applicable</li>
 <li>2 (age: younger vs older) × 2 (donation form: money vs time) × 2 (kinship: relatives vs non-relatives) mixed design, repeated measures ANOVA of transformed individual k values, without demographic variables as control + post-hoc tests if applicable</li>
@@ -4278,7 +4278,7 @@ well-considered value for the type argument to ezANOVA().</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="co">#AUC with covariates</span></span>
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="co">#AUC with covariates (KEY ANALYSIS OF INTEREST)</span></span>
 <span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>anova_AUC2<span class="ot">=</span><span class="fu">ezANOVA</span>(<span class="at">data =</span> df2_noNA_AUC, <span class="at">wid=</span>.(id), <span class="at">dv=</span><span class="fu">na.omit</span>(logAUC), <span class="at">within  =</span> .(donation, kinship), <span class="at">between =</span> .(age_group), <span class="at">between_covariates =</span> .(gender, important_family, important_friends) ,<span class="at">type =</span> <span class="dv">3</span>, <span class="at">observed =</span> .(age_group))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: You have removed one or more Ss from the analysis. Refactoring "id"
