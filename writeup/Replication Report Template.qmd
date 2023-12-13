@@ -2,6 +2,7 @@
 title: "Replication of 'Are Older Adults More Willing to Donate? The Roles of Donation Form and Social Relationship' by Gong, Zhang & Fung (2019, The Journals of Gerontology: Series B)"
 author: "Raphael Uricher (Email: ruricher@stanford.edu)"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
+warning: FALSE
 format:
   html:
     toc: true
@@ -12,17 +13,17 @@ format:
 
 ## Introduction
 
-My research interests lie broadly in culture, emotion, and well-being, topics that may not appear to be directly related to this study at first glance. However, the complex interplay between age, donation behaviour, and various relational factors (i.e., kinship, social distance) described in the original paper intuitively appears to me to be shaped by culture. Culture moulds how we understand age, our attitudes towards donation, and -- perhaps most importantly here -- how we relate to our families and close others (vs our non-relatives and strangers). When I looked over the original paper, I was interested to see that the sample was composed of "community-dwelling Chinese adults" apparently living in Hong Kong and immediately wondered if possible cultural differences between the sample used in original study and the sample used in the first replication attempt may have been implicated in the failure to replicate. Indeed, the authors of the original paper suggest the possibility of culture influencing their results, writing that "future studies should test whether this age difference in kin-selection in prosocial behaviors varies across cultures". If possible within the constraints of this project, I would be interested in potentially controlling for cultural background in my replication attempt, but I am very interested in this project in any case.
+This project revolves around how age shapes people's willingness to donate time and money to various others. The key research questions the original study was interested in examining were: 1) Do older adults donate more than younger adults? 2) Is age-donation relationship influenced by donation form (money vs time), kinship (relative vs non-relative), and/or social distance (closeness)?
 
-To conduct this experiment, I will need to collect data from a sample of older and younger adults. I will need to create a survey containing the following demographic items: gender, age, core social network size (i.e., estimated number of important relatives/friends), level of education, and household income. Older participants will also be asked to complete the Alzheimer’s Disease Assessment Scale-Cognitive Subscale (ADAS-Cog) as a measure of cognitive function. All participants will be asked to complete a hypothetical donation task in they will be asked how much money or time they would donate to a number of targets who systematically vary in their closeness to and kinship with the participant. The study will use a mixed design in which age (older vs younger) is a between-subjects variable and donation form (money vs time), kinship with the target (relative vs non-relative), and social distance with the target (targets ranked 1st, 2nd, 5th, 10th, 20th, 50th, and 100th in a list of 100 people ranked in descending order of closeness) are within-subjects variables.
+In this experiment, samples of older and younger adults, respectively, respond to a survey containing the following demographic items: gender, age, core social network size (i.e., estimated number of important relatives and friends in their lives), level of education, and household income. They also complete a hypothetical donation task in which they indicate how much money or time they would donate to a number of targets who systematically vary in their closeness to and kinship with the participant. The study uses a mixed design in which *age* (older vs younger) is a between-subjects variable and *donation form* (money vs time), *kinship with the target* (relative vs non-relative), and *social distance with the target* (targets ranked 1st, 2nd, 5th, 10th, 20th, 50th, and 100th in a list of 100 people ranked in descending order of closeness) are within-subjects variables.
 
-Analysis will involve first fitting a hyperbolic discount function to group data and testing for goodness of fit, then fitting a hyperbolic discount function to individual data to find each participant's discount rate (k) and area under curve (AUC) values. k and AUC values will then be log-transformed. Correlations between demographic variables and transformed k and AUC values will be investigated, and finally I will run a mixed 2 (age) × 2 (donation form) × 2 (kinship) repeated measures ANOVA on transformed k and AUC values.
-
-A key challenge will be recruitment of a sample of older adults. The older adult sample in the original study were 60-84 years old and it may be difficult to recruit people in this age bracket through Prolific. It may be worthwhile considering a) not including the older adult sample, b) the benefits and pitfalls of recruiting a slightly younger older adult sample, c) whether it might be possible to include age as a continuous rather than categorical variable and changing the analysis strategy accordingly, or d) including age as a control variable rather than as an independent variable of primary interest. A personal challenge will be learning how to fit a function to data; this is something I've never done before but a skill I'm looking forward to developing.
+Analysis involves first fitting a hyperbolic discount function to group data and testing for goodness of fit, then fitting a hyperbolic discount function to individual data to find each participant's discount rate (k) and area under curve (AUC) values. k and AUC values are then log-transformed, and finally submitted to mixed 2 (age) × 2 (donation form) × 2 (kinship) repeated measures ANOVAs, both with and without demographic variables as covariates.
 
 [Github Repository](https://github.com/psych251/gong2019_rescue)
 
 [Original Paper](https://github.com/psych251/gong2019_rescue/blob/main/original_paper/gbx099.pdf)
+
+[Preregistration](https://osf.io/c8f7k)
 
 [Link to Qualtrics survey](https://stanforduniversity.qualtrics.com/jfe/form/SV_4Trmek4bc8vVDp4)
 
@@ -97,24 +98,28 @@ Firstly, identifiable information will be removed from the data set. Next, I wil
 
 I will depart from the above analysis plan only in that I will use R rather than Matlab to conduct curve fitting and analyse data. Additionally, as in the first replication attempt, I will report the results of t-tests both with and without applying Bonferroni correction.
 
-**The key analysis of interest is the mixed design, repeated measures ANOVA of transformed AUC values controlling for demographic variables (gender, number of important family members, and number of important friends). I will be basing my decision about the success of this replication on whether there is a significant main effect of age in this ANOVA such that older adults are, across type of donation and relationship to the donation target, more generous than younger adults.**
+**The key analysis of interest is the mixed design, repeated measures ANOVA of transformed AUC values controlling for demographic variables.** Due to my error, the analysis I pre-registered was an ANOVA of transformed AUC values controlling for *gender, number of important family members, and number of important friends*. However, upon revisiting the original study and first replication, I found that the demographic variables this analysis controlled for were in fact *number of important friends, education, and household income*. I report the results of ANOVAs controlling for both sets of covariates below (and there is no change in the significance or direction of any effects regardless of which covariates are controlled for).
 
 ### Differences from Original Study and 1st replication
 
 1) Data will be collected on Prolific rather than in person (as in the original study) or on Mechanical Turk (as in the first replication attempt). This is unlikely to make a difference to the results because this is a survey study.
 
-2) The original study's participants were Hong Kong Chinese adults living in Hong Kong, whereas the first replication attempt sampled residents of the United States of any ethnicity. Rather than recruiting participants who live in a specific country, I will recruit participants who identify as Asian and/or list a Chinese language (e.g., Mandarin, Cantonese) as their first language to attempt to sample people with a relatively similar cultural background to the original study's participants. If cultural differences were indeed implicated in the failure to replicate, this strategy may increase the chances of replicating the original study's findings.
+2) The original study's participants were Hong Kong Chinese adults living in Hong Kong, whereas the first replication attempt sampled residents of the United States of any ethnicity. Rather than recruiting participants who live in a specific country, I will recruit participants who identify as East Asian to attempt to sample people with a relatively similar cultural background to the original study's participants. If cultural differences were indeed implicated in the failure to replicate, this strategy may increase the chances of replicating the original study's findings.
 
 ### Methods Addendum (Post Data Collection)
 
-You can comment this section out prior to final report with data collection.
-
 #### Actual Sample
-  Sample size, demographics, data exclusions based on rules spelled out in analysis plan
+
+76 younger adults and 76 older adults who were prescreened for age and self-identification as East Asian participated in the study. After excluding participants with NA values for any of the variables used in the main analyses, participants who did not report that they identified as 'Asian' on the Qualtrics survey, and participants who failed the attention check, the final sample consisted of 75 younger (age range: 18-44, mean: 28.7) and 62 older adults (age range: 50-72, mean: 55.0) adults.  
 
 #### Differences from pre-data collection methods plan
-  Any differences from what was described as the original plan, or “none”.
 
+
+1) The analysis pipeline could not tolerate missing values for any variables used in the analysis but I had initially only removed participants with missing values for variables in which missing values arose in the pilot studies. Consequently, I needed to tweak the code slightly to ensure *only complete cases* were included.
+
+2) I added a short chunk of code to *calculate the mean and range of age for each of the groups*.
+
+3) As discussed above, I pre-registered ANOVAs that included the covariates *gender, number of important family members, and number of important friends*. However, upon revisiting the original study and first replication, I found that the demographic variables the main analyses controlled for were in fact *number of important friends, education, and household income*. To rectify this error, I report the results of ANOVAs controlling for both sets of covariates below (and there is no change in the significance or direction of any effects regardless of which covariates are controlled for).
 
 ## Results
 
@@ -135,6 +140,11 @@ library(lme4)
 library(lmerTest)
 library(effsize)
 library(RColorBrewer)
+library(grid)
+library(gridExtra)
+library(imager)
+library(metafor)
+theme_set(theme_bw())
 ```
 Write function to compute hyperbolic function
 ```{r}
@@ -158,18 +168,18 @@ data_vs_discount <- function(V, k, N, amount) {
 
 Import data
 ```{r}
-df = read.csv("psyc251_pilot_b_data.csv", header=T)
+df = read.csv("psych251_final_data.csv", header=T)
 df <- tail(df, -2)
 ```
 
 Remove identifying information and extraneous variables
 ```{r}
-df = select(df, -1:-17, -59)
+df = select(df, -2:-17, -59)
 ```
 
 Add subject IDs
 ```{r}
-df$id <- 1:25
+df$id <- 1:182 #changed to reflect final number of participants
 ```
 
 Remove participants who failed attention check and TA
@@ -178,21 +188,45 @@ df = filter(df, attention_check==5)
 df = filter(df, gender_5_TEXT!="I AM YOUR TA PLEASE EXCLUDE ME")
 ```
 
-Group participants based on age (create an 'age group' column where participants are listed as either 'younger' or 'older')
+Also remove participants who were in the pilot and double check only participants who identified as Asian/Pacific Islander are included (though screening was implemented on Prolific to ensure only workers who identified as East Asian were shown the study advertisement in the first instance)
 ```{r}
-df <- df%>%
-  mutate(age_group = dplyr::case_when(age <= 39 ~ "younger", age > 40 ~ "older"),
-         age_group = factor(age_group, level = c("younger", "older"))
-  )
+df <- df %>%
+  mutate(StartDate = as.POSIXct(StartDate, format = "%Y-%m-%d %H:%M:%S")) %>%
+  filter(StartDate >= as.POSIXct("2023-12-07 15:57:46", format = "%Y-%m-%d %H:%M:%S")) #filtering out pilot participants
 
-#doing 40+ as older group just for the purposes of piloting but will change this to 60+ (if sampling) or 55+ or 50+ as appropriate (depending on my ability to find older participants on Prolific)
-
-summary(df$age_group)
+df <- df %>% filter(ethnicity ==2)
 ```
+
 
 Converting critical variables to numeric
 ```{r}
-df[,c(1:38)]=as.numeric(unlist(df[,c(1:38)]))
+df[,c(1:40)]=as.numeric(unlist(df[,c(1:40)]))
+```
+
+Remove participants with missing values for key variables used in study
+```{r}
+df <- filter(df, complete.cases(rel_1_money, rel_1_time, rel_2_money, rel_2_time, rel_5_money, rel_5_time, rel_10_money, rel_10_time, rel_20_money, rel_20_time, rel_50_money, rel_50_time, rel_100_money, rel_100_time, nonrel_1_money, nonrel_1_time, nonrel_2_money, nonrel_2_time, nonrel_5_money, nonrel_5_time, nonrel_10_money, nonrel_10_time, nonrel_20_money, nonrel_20_time, nonrel_50_money, nonrel_50_time, nonrel_100_money, nonrel_100_time, gender, education, income, important_friends, important_family))
+```
+
+Group participants based on age (create an 'age group' column where participants are listed as either 'younger' or 'older')
+```{r}
+df <- df%>%
+  mutate(age_group = dplyr::case_when(age <= 44 ~ "younger", age > 49 ~ "older"),
+         age_group = factor(age_group, level = c("younger", "older"))
+  )
+
+#remove participants who do not fall into designated age groups or who didn't enter an age
+
+df <- df %>% filter(!is.na(age_group))
+
+summary(df$age_group)
+
+demos <- df %>%
+  group_by(age_group) %>%
+  summarise(
+    mean_age = mean(age),
+    range_age = paste(min(age), "-", max(age))
+  )
 ```
 
 Renaming money and time preference variables so they don't get caught up in data wrangling
@@ -200,6 +234,10 @@ Renaming money and time preference variables so they don't get caught up in data
 df <- df %>%
   mutate(easeM = ease_money, easeT = ease_time, MorT = money_or_time) %>%
   select(-ease_money, -ease_time, -money_or_time)
+
+df$easeM <- as.numeric(df$easeM)
+df$easeT <- as.numeric(df$easeT)
+df$MorT <- as.numeric(df$MorT)
 ```
 
 Making data set longer
@@ -242,10 +280,10 @@ og_lng2=df_og2%>%
 
 #make variables numeric
 og_lng %>%
-  mutate_all(as.numeric)
+  mutate_all(as.numeric) %>% head()
 
 og_lng2 %>%
-  mutate_all(as.numeric)
+  mutate_all(as.numeric) %>% head()
 
 #create table with original median values
 med_table=og_lng%>%group_by(age_group,kinship,donation,soc_dist)%>%summarise(med_amnt=median(amount))
@@ -266,6 +304,7 @@ d=med_table2
 #create empty vectors to store values
 age_group=vector(mode="character",length=0); donation=vector(mode="character",length=0); kinship=vector(mode="character",length=0); V_values=vector(mode="numeric",length=0); k_values=vector(mode="numeric",length=0); RMSE=vector(mode="numeric",length=0); 
 R_sq=vector(mode="numeric",length=0)
+
 
 #run for each age group, extract values for donation * kinship conditions
 
@@ -630,10 +669,10 @@ df2_noNA_k=df2%>%filter(na_k_counts==0)
 3) 2 (age: younger vs older) × 2 (donation form: money vs time) × 2 (kinship: relatives vs non-relatives) mixed design, repeated measures ANOVA of transformed individual k values, with demographic variables as control + post-hoc tests if applicable
 4) 2 (age: younger vs older) × 2 (donation form: money vs time) × 2 (kinship: relatives vs non-relatives) mixed design, repeated measures ANOVA of transformed individual k values, without demographic variables as control + post-hoc tests if applicable
 ```{r}
-#preparing the datasets for ANOVA by removing missing values
-df2_noNA_AUC <- na.omit(df2_noNA_AUC[, c("id", "logAUC", "important_family", "important_friends", "donation", "kinship", "age_group", "gender")])
+#preparing the datasets for ANOVA by removing missing values (updated to include education and income)
+df2_noNA_AUC <- na.omit(df2_noNA_AUC[, c("id", "logAUC", "important_family", "important_friends", "donation", "kinship", "age_group", "gender", "education", "income")])
 
-df2_noNA_k <- na.omit(df2_noNA_k[, c("id", "log_k", "important_family", "important_friends", "donation", "kinship", "age_group", "gender")])
+df2_noNA_k <- na.omit(df2_noNA_k[, c("id", "log_k", "important_family", "important_friends", "donation", "kinship", "age_group", "gender", "education", "income")])
 ```
 
 ```{r}
@@ -644,8 +683,15 @@ kable(anova_AUC1$ANOVA)
 ```
 
 ```{r}
-#AUC with covariates (KEY ANALYSIS OF INTEREST)
+#AUC with gender, number of important family members, and number of important friends as covariates
 anova_AUC2=ezANOVA(data = df2_noNA_AUC, wid=.(id), dv=na.omit(logAUC), within  = .(donation, kinship), between = .(age_group), between_covariates = .(gender, important_family, important_friends) ,type = 3, observed = .(age_group))
+
+kable(anova_AUC2$ANOVA)
+```
+
+```{r}
+#AUC with education, income, and number of important friends as covariates
+anova_AUC2=ezANOVA(data = df2_noNA_AUC, wid=.(id), dv=na.omit(logAUC), within  = .(donation, kinship), between = .(age_group), between_covariates = .(education, income, important_friends) ,type = 3, observed = .(age_group))
 
 kable(anova_AUC2$ANOVA)
 ```
@@ -658,27 +704,126 @@ kable(anova_k1$ANOVA)
 ```
 
 ```{r}
-#AUC with covariates
+#k value with gender, number of important family members, and number of important friends as covariates
 anova_k2=ezANOVA(data = df2_noNA_k, wid=.(id), dv=na.omit(log_k), within  = .(donation, kinship), between = .(age_group), between_covariates = .(gender, important_family, important_friends) ,type = 3, observed = .(age_group))
 
 kable(anova_k2$ANOVA)
 ```
 
-*Three-panel graph with original, 1st replication, and your replication is ideal here*
+```{r}
+#k value with education, income, and number of important friends as covariates
+anova_k2=ezANOVA(data = df2_noNA_k, wid=.(id), dv=na.omit(log_k), within  = .(donation, kinship), between = .(age_group), between_covariates = .(education, income, important_friends) ,type = 3, observed = .(age_group))
+
+kable(anova_k2$ANOVA)
+```
+
+### Visualisation
+```{r}
+#set data to create similar median amounts plots to the one appearing in the original paper
+med_table_plot=med_table2%>%unite('Age-Kinship', c('age_group', 'kinship'), sep=" - ")
+
+ggplot(data = med_table_plot, aes(x = soc_dist, y = med_amnt, color = `Age-Kinship`)) +
+  geom_point(position = "dodge", aes(shape = `Age-Kinship`)) +
+  geom_smooth(method = "nls", formula = y ~ a / (b + x), 
+              method.args = list(start = c(a = 100, b = 10)), 
+              se = FALSE, linewidth = 0.5) +
+  ylim(0, 100) +
+  facet_grid(donation ~ ., labeller = labeller(donation = c("money" = "Money (x $1000 USD)", "time" = "Time (x days)"))) +
+  xlab("Closeness") +
+  ylab("Median amount donated") +
+  ggthemes::theme_few()
+```
+
+```{r, echo=FALSE, fig.show='asis'}
+    gong2019_figure <- png::readPNG("gong2019_figure.png")
+    shavit_figure <- png::readPNG("shavit_figure.png")
+    rescue_figure <- png::readPNG("rescue_figure.png")
+    
+    layout <- matrix(c(1, 2, 3), nrow = 1)
+
+threepanel <- grid.arrange(
+  rasterGrob(gong2019_figure, interpolate = TRUE),
+  rasterGrob(shavit_figure, interpolate = TRUE),
+  rasterGrob(rescue_figure, interpolate = TRUE),
+  layout_matrix = layout
+)
+
+grid.text("Original study", x = 0.1, y = 0.02, gp = gpar(fontsize = 10, fontface = "bold"))
+grid.text("First replication attempt", x = 0.5, y = 0.02, gp = gpar(fontsize = 10, fontface = "bold"))
+grid.text("Rescue attempt", x = 0.9, y = 0.02, gp = gpar(fontsize = 10, fontface = "bold"))
+```
 
 ### Exploratory analyses
 
-Any follow-up analyses desired (not required).  
+I was interested in testing differences between age groups on demographic variables.
+```{r}
+gender_table <- table(df$gender, df$age_group)
+barplot(gender_table, beside = TRUE,
+        legend = c("Male", "Female", "Non-binary"),
+        main = "Gender x Age", xlab = "Age Group", ylab = "Count")
+
+chisq.test(table(df$gender, df$age_group)) #significantly different
+
+education_table <- table(df$education, df$age_group)
+barplot(education_table, beside = TRUE,
+        legend = c("Middle school", "High school", "Some college", "Bachelor's degree", "Graduate degree"),
+        main = "Education x Age", xlab = "Age Group", ylab = "Count")
+
+t.test(education ~ age_group, data = df) #not significantly different
+
+income_table <- table(df$income, df$age_group)
+barplot(income_table, beside = TRUE,
+        legend = c("0-30k", "30-60k", "60-90k", "90-120k", "120-150k", "150k+"),
+        main = "Income x Age", xlab = "Age Group", ylab = "Count")
+
+t.test(income ~ age_group, data = df) #not significantly different
+
+income_table <- table(df$important_friends, df$age_group)
+barplot(income_table, beside = TRUE,
+        main = "Number of important friends x Age", xlab = "Age Group", ylab = "Count")
+
+t.test(important_friends ~ age_group, data = df) #not significantly different
+
+income_table <- table(df$important_family, df$age_group)
+barplot(income_table, beside = TRUE,
+        main = "Number of important family x Age", xlab = "Age Group", ylab = "Count")
+
+t.test(important_family ~ age_group, data = df) #not significantly different
+
+income_table <- table(df$easeM, df$age_group)
+barplot(income_table, beside = TRUE,
+        main = "Ease of earning money x Age", xlab = "Age Group", ylab = "Count")
+
+t.test(easeM ~ age_group, data = df) #not significantly different
+
+income_table <- table(df$easeT, df$age_group)
+barplot(income_table, beside = TRUE,
+        main = "Ease of getting time off x Age", xlab = "Age Group", ylab = "Count")
+
+t.test(easeT ~ age_group, data = df) #not significantly different
+```
+Interestingly, the age groups were statistically equivalent across all demographic variables except gender. This suggests that the lack of a main effect of age was not driven by age-related differences in other demographic factors.
 
 ## Discussion
 
 ## Mini meta analysis
-Combining across the original paper, 1st replication, and 2nd replication, what is the aggregate effect size? 
+
+I was not able to conduct a mini meta-analysis because the key analysis of interest was the main effect of age in a mixed design ANOVA. The effect size measure obtainable was partial eta-squared and there was no real way for me to convert this to Cohen's d (largely due to differences in group sizes within each of the studies).
+
+However, I will note here that effect size of the main effect of age varied considerably in each incarnation of this study: in the original study partial eta-squared was 0.05, in the first replication attempt it was 0.025, and in this study it was between 0.001 and 0.01 depending on whether and which covariates were included in analyses.
 
 ### Summary of Replication Attempt
 
-Open the discussion section with a paragraph summarizing the primary result from the confirmatory analysis and the assessment of whether it replicated, partially replicated, or failed to replicate the original result.  
+Overall, it is fair to say this replication attempt was not successful. Across multiple ANOVAs with or without two different combinations of covariates, and irrespective of the measure of donation willingness used as the dependent variable (i.e., AUC or k values), the main effect of age was consistently far from statistically significant.
+
+Interestingly, however, donation type and kinship emerged as robust predictors of donation willingness across all analyses. Visualisation of the data revealed that participants, regardless of age, were significantly more willing to donate *time* over *money*, and to donate to *relatives* over *non-relatives*. This suggests that, at least among this sample, donation type and kinship may be much more important predictors of generosity than age.
+
+Perhaps even more interestingly, in the original study, Gong and colleagues did not find any main effect of donation type or kinship. However, in the first replication attempt, Shavit actually found main effects of donation type and kinship in the same directions as the current rescue project. Accordingly, though the findings of the current project essentially did not converge with the original study in any way, they actually served to replicate and corroborate the findings of the first replication attempt: there was no significant main effect of age, but there were significant main effects of donation type and kinship.
 
 ### Commentary
 
-Add open-ended commentary (if any) reflecting (a) insights from follow-up exploratory analysis, (b) assessment of the meaning of the replication (or not) - e.g., for a failure to replicate, are the differences between original and present study ones that definitely, plausibly, or are unlikely to have been moderators of the result, and (c) discussion of any objections or challenges raised by the current and original authors about the replication attempt.  None of these need to be long.
+The main way in which this project attempted to shed light on the first replication attempt's failure to replicate the original study's findings was by sampling a new set of individuals *whose cultural backgrounds more closely aligned with the participants in the original study*. Although this was not a perfect, or even ideal, test of the role of culture in moderating the complex relationship between donation willingness and age, kinship, and donation form - we cannot assume that the experiences and values of Hong Kong Chinese are comparable to those of Prolific workers who identify as East Asian - it does suggest that the effect found in the original study may have been specific to the Hong Kong Chinese context.
+
+An important caveat to this study's findings is that the participants in the older group here were *considerably younger* than the participants in both the original study and the first replication attempt. Here, we elected to lower the age limit for participation as part of the older adult group in order to recruit a sufficient number of older East Asian participants on Prolific, and, in this way, to prioritise investigating the influence of culture. Nonetheless, this is a meaningful way in which this rescue attempt diverged from the studies it followed.
+
+As a final aside, it was interesting to see how powerful *educational attainment* and *household income* - both of which can be considered facets of socioeconomic status (SES) - were in explaining variance in donation willingness when included in the analyses as covariates. This suggests that these factors may be considerably more important than age in shaping generosity towards close others, at least among English-speaking samples. This is perhaps unsurprising as - even though the donation task was purely hypothetical - higher SES seems intuitively likely to be associated with higher rates of engaging in donation behaviour. Perhaps the more money people have to spare, the easier it is for them to imagine wanting to share their money and time with the people they care about in times of need.
