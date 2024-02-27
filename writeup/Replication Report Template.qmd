@@ -191,7 +191,7 @@ df = filter(df, gender_5_TEXT!="I AM YOUR TA PLEASE EXCLUDE ME")
 Also remove participants who were in the pilot and double check only participants who identified as Asian/Pacific Islander are included (though screening was implemented on Prolific to ensure only workers who identified as East Asian were shown the study advertisement in the first instance)
 ```{r}
 df <- df %>%
-  mutate(StartDate = as.POSIXct(StartDate, format = "%Y-%m-%d %H:%M:%S")) %>%
+  mutate(StartDate = as.POSIXct(StartDate, format = "%d/%m/%Y %H:%M")) |> 
   filter(StartDate >= as.POSIXct("2023-12-07 15:57:46", format = "%Y-%m-%d %H:%M:%S")) #filtering out pilot participants
 
 df <- df %>% filter(ethnicity ==2)
@@ -827,3 +827,22 @@ The main way in which this project attempted to shed light on the first replicat
 An important caveat to this study's findings is that the participants in the older group here were *considerably younger* than the participants in both the original study and the first replication attempt. Here, we elected to lower the age limit for participation as part of the older adult group in order to recruit a sufficient number of older East Asian participants on Prolific, and, in this way, to prioritise investigating the influence of culture. Nonetheless, this is a meaningful way in which this rescue attempt diverged from the studies it followed.
 
 As a final aside, it was interesting to see how powerful *educational attainment* and *household income* - both of which can be considered facets of socioeconomic status (SES) - were in explaining variance in donation willingness when included in the analyses as covariates. This suggests that these factors may be considerably more important than age in shaping generosity towards close others, at least among English-speaking samples. This is perhaps unsurprising as - even though the donation task was purely hypothetical - higher SES seems intuitively likely to be associated with higher rates of engaging in donation behaviour. Perhaps the more money people have to spare, the easier it is for them to imagine wanting to share their money and time with the people they care about in times of need.
+
+## Supplementary Image
+
+(added by VB for effect direction estimation)
+
+```{r}
+ggplot(data = df2_noNA_AUC, aes(x=age_group, y=logAUC,color=age_group))+
+  geom_point(position="jitter",alpha=0.5)+
+  scale_color_brewer(palette="Set1")+
+  stat_summary(fun = "mean", geom="bar", alpha=0.3)+
+  ylim(0,9)+
+    stat_summary(fun.data = "mean_cl_boot", geom="pointrange", alpha=0.6, color="black")+
+  #geom_pointrange(data=mean_and_ci, aes(y=mean,ymin = ci_lower, ymax = ci_upper),color = "black",size=0.7, alpha=0.6)+
+  ggthemes::theme_few()+
+  ggtitle("Mean AUC values by age group, donation type, and kinship")+
+  ylab("AUC values (log transformed)")+
+  xlab("Age group")+
+  facet_grid(donation~kinship)
+```
