@@ -106,6 +106,8 @@ I will depart from the above analysis plan only in that I will use R rather than
 
 2) The original study's participants were Hong Kong Chinese adults living in Hong Kong, whereas the first replication attempt sampled residents of the United States of any ethnicity. Rather than recruiting participants who live in a specific country, I will recruit participants who identify as East Asian to attempt to sample people with a relatively similar cultural background to the original study's participants. If cultural differences were indeed implicated in the failure to replicate, this strategy may increase the chances of replicating the original study's findings.
 
+The replication closeness score for this study rests on how different one considers the differences between the populations to be. The key difference is that the original study collected data from individuals living in Hong Kong, and all participants in the 'older' group were over 60. In this replication attempt, participants self-identified as East Asian, and all participants in the 'older' group were over 50 (see _Actual Sample_ section below). If one considers this to be a major population difference, this was a *far* replication. However, given the operalisation of the IV and DV, in addition to the stimuli used for the IV and DV, were the same, if one considers the population differences to be minor, this was a *very close* replication.
+
 ### Methods Addendum (Post Data Collection)
 
 #### Actual Sample
@@ -808,13 +810,15 @@ Interestingly, the age groups were statistically equivalent across all demograph
 
 ## Mini meta analysis
 
-I was not able to conduct a mini meta-analysis because the key analysis of interest was the main effect of age in a mixed design ANOVA. The effect size measure obtainable was partial eta-squared and there was no real way for me to convert this to Cohen's d (largely due to differences in group sizes within each of the studies).
+I was not able to conduct a mini meta-analysis because the key analysis of interest was the main effect of age in a mixed design ANOVA. The effect size measure obtainable was partial eta-squared and there was no real way for me to convert this to Cohen's d (largely due to differences in group sizes within each of the studies). Additionally, no other attempts to replicate this study other than those conducted for this class were found.
 
 However, I will note here that effect size of the main effect of age varied considerably in each incarnation of this study: in the original study partial eta-squared was 0.05, in the first replication attempt it was 0.025, and in this study it was between 0.001 and 0.01 depending on whether and which covariates were included in analyses.
 
+In the original study, the main effect of age on AUC value was F(1,134) = 6.52, p < .05. In the first replication attempt, the main effect effect of age on AUC value was F(1,70) = 1.66, p = .20. In the the current replication rescue attempt, the main effect effect of age on AUC value was F(1,113) = 0.24, p = .62.
+
 ### Summary of Replication Attempt
 
-Overall, it is fair to say this replication attempt was not successful. Across multiple ANOVAs with or without two different combinations of covariates, and irrespective of the measure of donation willingness used as the dependent variable (i.e., AUC or k values), the main effect of age was consistently far from statistically significant.
+Overall, it is fair to say this replication attempt was not successful. Across multiple ANOVAs with or without two different combinations of covariates, and irrespective of the measure of donation willingness used as the dependent variable (i.e., AUC or k values), the main effect of age was consistently far from statistically significant. Therefore, I would give this rescue attempt a rating of 0 in terms of how well it replicated the original study's reuslts.
 
 Interestingly, however, donation type and kinship emerged as robust predictors of donation willingness across all analyses. Visualisation of the data revealed that participants, regardless of age, were significantly more willing to donate *time* over *money*, and to donate to *relatives* over *non-relatives*. This suggests that, at least among this sample, donation type and kinship may be much more important predictors of generosity than age.
 
